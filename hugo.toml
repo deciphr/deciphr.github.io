@@ -4,8 +4,20 @@ title = 'deciphr'
 theme = 'holy'
 
 [menu]
-[[menu.main]]
-    identifier = "github"
-    name = "GitHub"
-    url = "https://github.com/deciphr"
-    weight = 10
+    [[menu.main]]
+        identifier = "github"
+        name = "GitHub"
+        url = "https://github.com/deciphr"
+        weight = 10
+
+    [[menu.main]]
+        identifier = "blog"
+        name = "Blog"
+        url = "/blog/"
+        weight = 9
+
+    [[menu.main]]
+        identifier = "writeups"
+        name = "Writeups"
+        url = "/writeups/"
+        weight = 8
