@@ -21,3 +21,6 @@ theme = 'holy'
         name = "Writeups"
         url = "/writeups/"
         weight = 8
+
+[taxonomies]
+    tag = 'tags'
