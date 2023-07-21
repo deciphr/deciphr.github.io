@@ -169,7 +169,7 @@ from pwn import *
 ### Finding our offset ###
 io = process('./baby_bof_x64') # You must use the local process
 
-# Sending a arbitrary cyclic pattern
+# Sending an arbitrary cyclic pattern
 io.sendline(cyclic(128))
 
 # Waiting our program to crash
