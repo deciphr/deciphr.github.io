@@ -1,7 +1,15 @@
 baseURL = 'https://deciphr.github.io/'
+enableEmoji = true
 languageCode = 'en-us'
 title = 'deciphr'
 theme = 'holy'
+
+[params]
+    copyright = "© deciphr"
+
+[markup]
+    [markup.highlight]
+        noClasses = false
 
 [menu]
     [[menu.main]]
@@ -13,13 +21,13 @@ theme = 'holy'
     [[menu.main]]
         identifier = "blog"
         name = "Blog"
-        url = "/blog/"
+        url = "/blog"
         weight = 9
 
     [[menu.main]]
         identifier = "writeups"
         name = "Writeups"
-        url = "/writeups/"
+        url = "/writeups"
         weight = 8
 
 [taxonomies]
