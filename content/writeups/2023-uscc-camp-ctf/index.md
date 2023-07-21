@@ -499,7 +499,7 @@ Calls a function `rbx`'s pointer.
 ##### Case 8
 Adds `0x1` to `rbx`
 
-#### Case 9
+##### Case 9
 Adds `0x2` to `rbx`
 
 Now that we understood what each digit does, how can we figure out the code here? I pointed out that [case 5](#case-5) called a function at `rbx`. Well we do have a `win()` function, so let's grab the address of that.
