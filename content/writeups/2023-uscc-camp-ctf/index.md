@@ -339,7 +339,7 @@ undefined8 year_check(void)
 }
 ```
 
-Looking at the decompiled code, in order to have the function **return 1** we must g0et the year equal to 200, yet the first IF statement checks if our year is less than 2022. This is a problem since 2000 is less than 2022 :exploding_head:.
+Looking at the decompiled code, in order to have the function **return 1** we must get the year equal to 200, yet the first IF statement checks if our year is less than 2022. This is a problem since 2000 is less than 2022 :exploding_head:.
 
 What can we do to get pass this if we can't overflow a buffer? Well, I noticed that the `year` variable is a `int` type, but the IF statement was checking it as a `short` type. We can [view the max values](https://learn.microsoft.com/en-us/cpp/c-language/cpp-integer-limits?view=msvc-170) to somehow get pass the first condition and satisfy the second condition.
 
