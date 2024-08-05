@@ -2,7 +2,6 @@
 title: "2024 n00bzCTF"
 date: 2024-08-03T18:26:59-05:00
 tags: ['web']
-draft: true
 ---
 
 ## Challenges
