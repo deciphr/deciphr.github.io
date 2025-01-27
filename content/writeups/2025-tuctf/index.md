@@ -1,6 +1,7 @@
 ---
 title: "2025 TUCTF"
 date: 2025-01-26T21:41:16-06:00
+tags: [forensics]
 ---
 
 ## Challenges
