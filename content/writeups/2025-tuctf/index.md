@@ -59,4 +59,4 @@ There's a version from **11/17/2024**, let's view that. Looking at the password 
 ![Image of flag](images/bunker/keepass-flag.png)
 
 #### Conclusion
-This was a fun and unique forensics challenge. Despite falling down the rabbit hole of examining the dump file, persistance led to the flag.
+This was a fun and unique forensics challenge. Despite falling down the rabbit hole of examining the dump file, persistence led to the flag.
