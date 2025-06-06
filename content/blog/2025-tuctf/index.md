@@ -1,7 +1,7 @@
 ---
 title: "2025 TUCTF"
 date: 2025-01-26T21:41:16-06:00
-tags: [forensics]
+tags: ['writeup', 'forensics']
 ---
 
 ## Challenges
@@ -12,10 +12,12 @@ tags: [forensics]
 You were given an 7z archive: `Bunker.7z`. Inside were two files: `BUNKER_DB` and `BUNKER_DMP`.
 - - -
 Without any file extensions, I had no idea what these files were. However, judging by the **DB** and **DMP**, I assumed they were a database and dump file.
-```shell
+
+{{< highlight bash bash >}}
 Bunker_DB:  Keepass password database 2.x KDBX
 Bunker_DMP: Mini DuMP crash report, 17 streams, Sun Nov 17 22:47:09 2024, 0x621826 type
-```
+{{< /highlight >}}
+
 A KeePass password database and a minidump crash report... interesting.
 
 #### Investigating the dump
@@ -25,7 +27,7 @@ So, I decided to look up how a KeePass database and a minidump related to one an
 Turns out, there's a tool for that. In this case, I used this GitHub repo: https://github.com/JorianWoltjer/keepass-dump-extractor.
 
 Running the program, this is what I got in return.
-```shell
+{{< highlight bash bash >}}
 keepass-dump-extractor Bunker_DMP -f gaps
 
 ●L0Ry_2_M4nk1Nd!_Y0RH4
@@ -33,7 +35,8 @@ keepass-dump-extractor Bunker_DMP -f gaps
 ●Ḁ0Ry_2_M4nk1Nd!_Y0RH4
 ●§0Ry_2_M4nk1Nd!_Y0RH4
 ●Ȁ0Ry_2_M4nk1Nd!_Y0RH4
-```
+{{< /highlight >}}
+
 
 Examining the output, it looks like the first letter in the password is probably going to be a `g` or `G`.
 

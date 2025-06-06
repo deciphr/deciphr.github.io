@@ -1,34 +1,26 @@
 baseURL = 'https://deciphr.github.io/'
-enableEmoji = true
 languageCode = 'en-us'
 title = 'deciphr'
-theme = 'holy'
+theme = "idyllic"
+
+enableEmoji = true
+summaryLength = 7
 
 [params]
-    copyright = "© deciphr"
+  enableSummary = false
+  [params.whoami]
+    descriptor = 'a cybersecurity student interested in'
+    focus = 'industrial control systems + hardware'
+  [params.socials]
+    github = 'https://github.com/deciphr'
+  [params.tagcolors]
+    pwn = '#4c00b0'
+    rev = '#e6b400'
+    web = '#228b22'
+    forensics = '#4169e1'
 
 [markup]
-    [markup.highlight]
-        noClasses = false
-
-[menu]
-    [[menu.main]]
-        identifier = "github"
-        name = "GitHub"
-        url = "https://github.com/deciphr"
-        weight = 10
-
-    [[menu.main]]
-        identifier = "blog"
-        name = "Blog"
-        url = "/blog"
-        weight = 9
-
-    [[menu.main]]
-        identifier = "writeups"
-        name = "Writeups"
-        url = "/writeups"
-        weight = 8
-
-[taxonomies]
-    tag = 'tags'
+  [markup.highlight]
+    lineNos = true
+    lineNumbersInTable = false
+    style = "modus-vivendi"

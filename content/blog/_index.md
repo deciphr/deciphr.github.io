@@ -1,4 +1,4 @@
 +++
-title = "Blog"
-aliases = ["blog"]
+title = "Writeups"
+aliases = ["writeups"]
 +++

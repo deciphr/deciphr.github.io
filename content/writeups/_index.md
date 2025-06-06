@@ -1,4 +1,0 @@
-+++
-title = "Writeups"
-aliases = ["writeups"]
-+++

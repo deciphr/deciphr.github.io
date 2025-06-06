@@ -1,7 +1,7 @@
 ---
 title: "2024 n00bzCTF"
 date: 2024-08-03T18:26:59-05:00
-tags: ['web']
+tags: ['writeup','web']
 ---
 
 ## Challenges
@@ -12,8 +12,7 @@ Tired of storing passwords? No worries! This super secure website is passwordles
 - - -
 For this challenge, we had to exploit a program weakness.
 
-**app.py**
-```py
+{{< highlight py app.py >}}
 #!/usr/bin/env python3
 from flask import Flask, request, redirect, render_template, render_template_string
 import subprocess
@@ -46,18 +45,19 @@ def user_page(uid):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=1337)
-```
+{{< /highlight >}}
+
 Looking at the source, the flag can be retrieved via the `user_page()` route. The route compares the **UID** input from the user to the hard-coded **UUID5**.
 
 #### Solution
 In a Python terminal...
-```
+{{< highlight bash bash >}}
 >>> import uuid
 >>> leet=uuid.UUID('13371337-1337-1337-1337-133713371337')
 >>> str(uuid.uuid5(leet, 'admin123'))
 '3c68e6cc-15a7-59d4-823c-e7563bbb326c'
 >>>
-```
+{{< /highlight >}}
 
 Now that we have our target **UID**, let's send it to the route: `http://127.0.0.1:1337/3c68e6cc-15a7-59d4-823c-e7563bbb326c`
 

