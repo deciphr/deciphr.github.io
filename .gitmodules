@@ -1,6 +1,3 @@
-[submodule "themes/holy"]
-	path = themes/holy
-	url = https://github.com/deciphr/holy
-[submodule "holy"]
-	path = holy
-	url = https://github.com/deciphr/holy
+[submodule "themes/idyllic"]
+	path = themes/idyllic
+	url = https://github.com/deciphr/idyllic
